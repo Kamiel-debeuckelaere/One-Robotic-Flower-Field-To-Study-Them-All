@@ -1,0 +1,92 @@
+// 1 Flower functioning
+
+#define debugSerial Serial // serial monitor (cable connection)
+
+enum FlowerState
+{
+  sleep,
+  wakeUp,
+  work,
+  goingToSleep
+} FlowerState; // sleep=0, wakeUp=1, work=2, goingToSleep=3
+
+#define PowerSwitch 7  // MOSFET (LED + Servo), Low = on
+
+void timeConvert();
+
+int sleepCounter;
+bool timeToSleep;
+String timeToSleepString;
+
+int wakeUpSendCounter;
+
+// 2 InfraRed System
+
+#define IRreceiverPower 8 //digital GPIO pin
+#define IRemitterPower 9     //digital GPIO pin
+#define IRsensorRead A0  //analog GPIO pin
+
+uint8_t visitCounter;     //max. 250
+unsigned long startVisit;  // internal time at start visit
+
+int sensorValue;
+int previousSensorValue;
+
+int visitState;
+int previousVisitState;
+
+unsigned long startTimeCycle;
+
+unsigned long startVisitTimer;
+
+bool queueIsFull;
+
+uint8_t obstrCounter;
+bool obstruction;
+
+// 3 Servo system
+
+VarSpeedServo myServo;
+
+#define servoControl 10  //digital GPIO pin
+
+int refillNeed = 0;
+
+void refill();
+void automaticRefill();
+
+unsigned long startTimeAutoRefill;
+
+unsigned long refillGapTimer;
+
+// 4 LED
+
+#define LEDdataPin 5
+CRGB leds [1]; //amount of leds
+void Battery_LEDflash(unsigned long, unsigned long);
+unsigned long LightTimer;
+unsigned long currentBatteryTime;
+
+// 5 Battery
+
+#define Battery_pin A1
+float Battery_voltage;
+bool batteryWarning; //initial no warning
+
+void Read_battery();
+
+// 6 LoRaWAN
+
+#define LoRaReset 6
+#define loraSerial Serial1 // sending data over radio
+rn2xx3 myLora(loraSerial);
+
+void savetoRAM(unsigned long, uint8_t);
+void sendData(unsigned long, uint8_t);
+
+unsigned long sendStartTime;
+unsigned long startSending;
+
+bool sendDuringVisit;
+uint8_t retryCount;
+

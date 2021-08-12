@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "fixed_variables": "cpp",
+        "variables": "cpp",
+        "variables_dev": "cpp"
+    }
+}
