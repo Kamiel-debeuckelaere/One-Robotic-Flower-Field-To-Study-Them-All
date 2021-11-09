@@ -1,5 +1,5 @@
 #define DEV_MODE true // true = led giving signal of status and keep possibility open to connect to debugSerial
-#define SHOW_IR_VALUE false // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
+#define SHOW_IR_VALUE true // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
 #define DEBUG // put in comment to keep serial prints from compiling --> no serial debug lines are compiled
 
 // 1 Flower functioning
@@ -23,7 +23,7 @@
 #define SERVO_CLOSE 0  //position of servo-arm on feeding-hole
 #define SERVO_SPEED 10 //set speed of servo (0 = full speed, 1-255 slow to faster)
 
-#define REFILL_GAP 10000  //refill gap after visit (10sec.)
+#define REFILL_GAP 3000  //refill gap after visit (3sec.)
 
 #define REFILL_TIME 500  //time the arm remains in reservoir(0.5 sec.)
 #define VISIT_TRESHOLD 1 //only refill if visit lasts at least this treshold time (1 sec.)
