@@ -1,0 +1,5 @@
+This directory contains 2 flows in JSON format that can be imported in Node-RED.
+More information on how to import a flow: https://nodered.org/docs/user-guide/editor/workspace/import-export
+
+The 'File Logger Flow' is only needed once per robotic flower field system.
+The 'Flower Flow' is needed for every seperate robotic flower in the system (change topic so it contains the right device name!)
