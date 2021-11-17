@@ -694,7 +694,8 @@ void loop()
   {
     while (sleepCounter < SLEEP_TIME)
     { // deep sleep for some time during night to save battery
-      sleepCounter += 8;
+      sleepCounter += 9;
+
       if (DEV_MODE == true)
       { //keep serial monitor open for development
         delay(8000);
@@ -720,10 +721,12 @@ void loop()
     {
       while (wakeUpSendCounter < SLEEP_SEND_FREQUENCY)
       {
-        wakeUpSendCounter += 8;
+        wakeUpSendCounter += 9;
         LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); //max. sleep time 8 sec. (+- 10%)
       }
+      delay (10);
       sendData(0,2); //send to be able to receive message for waking up
+
       wakeUpSendCounter = 0; // reset counter
     }
 
