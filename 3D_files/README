@@ -1,0 +1,4 @@
+This directory contains a Zip-compressed archive file for Autodesk® Fusion 360® (.f3z) and a folder with stl-files of the prototype ready for 3D-printing.
+
+To open the archive file, select "Upload" in the Fusion 360 Data panel and choose the F3Z file. 
+The contents of the file will be loaded in Fusion 360, displaying the main assembly in the panel with the F3D design(s), allowing you to view and edit them.
