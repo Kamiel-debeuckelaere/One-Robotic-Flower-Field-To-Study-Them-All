@@ -1,0 +1,92 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/include",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/lib/VarSpeedServo-master",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/uDebugLib/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Low-Power",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Queue/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/RN2xx3 Arduino Library/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/TheThingsNetwork/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Servo/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/FastLED/src",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/variants/sparkfun_promicro",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/TheThingsNode/src",
+                "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Ticker",
+                "/Users/kamiel/.platformio/lib/CapacitiveSensor",
+                "/Users/kamiel/.platformio/lib/LiquidCrystal",
+                "/Users/kamiel/.platformio/lib/Servo/src",
+                "/Users/kamiel/.platformio/lib/TheThingsNetwork/src",
+                "/Users/kamiel/.platformio/lib/Ticker",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "/Users/kamiel/.platformio/packages/tool-unity",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/include",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/lib/VarSpeedServo-master",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/uDebugLib/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Low-Power",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Queue/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/RN2xx3 Arduino Library/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/TheThingsNetwork/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Servo/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/FastLED/src",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/variants/sparkfun_promicro",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/TheThingsNode/src",
+                    "/Users/kamiel/Desktop/Thesis/GitHub/One-Robotic-Flower-Field-To-Study-Them-All/.pio/libdeps/sparkfun_promicro8/Ticker",
+                    "/Users/kamiel/.platformio/lib/CapacitiveSensor",
+                    "/Users/kamiel/.platformio/lib/LiquidCrystal",
+                    "/Users/kamiel/.platformio/lib/Servo/src",
+                    "/Users/kamiel/.platformio/lib/TheThingsNetwork/src",
+                    "/Users/kamiel/.platformio/lib/Ticker",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "/Users/kamiel/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "/Users/kamiel/.platformio/packages/tool-unity",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=50202",
+                "ARDUINO_AVR_PROMICRO8",
+                "F_CPU=8000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "USB_VID=0x1B4F",
+                "USB_PID=0x9203",
+                "USB_PRODUCT=\"SparkFun Pro Micro\"",
+                "USB_MANUFACTURER=\"SparkFun\"",
+                "__AVR_ATmega32U4__",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "/Users/kamiel/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega32u4",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
