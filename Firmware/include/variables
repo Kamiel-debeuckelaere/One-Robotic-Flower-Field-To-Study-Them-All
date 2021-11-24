@@ -6,7 +6,7 @@
 
 // Change flower functioning by changing these variables
 
-#define SLEEP_TIME 25200 //'deep' sleep time (in sec.) after going to sleep (e.g. 7h = 25200 sec. +/- 10%) -> save power
+#define SLEEP_TIME 21600 //'deep' sleep time (in sec.) after going to sleep (e.g. 6h = 21600 sec. +/- 10%) -> save power
 
 #define SENSOR_SENSITIVITY 3 // adjust to need (lower = more sensitive to IR -> quicker detection)
 
