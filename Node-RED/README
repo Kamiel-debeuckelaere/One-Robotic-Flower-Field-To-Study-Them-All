@@ -1,5 +1,10 @@
 This directory contains 2 flows in JSON format that can be imported in Node-RED.
 More information on how to import a flow: https://nodered.org/docs/user-guide/editor/workspace/import-export
 
+
 The 'File Logger Flow' is only needed once per robotic flower field system.
+-> change path to folder where CSV should be stored (nodes: 'filename generator', 'file-lister', 'init' and 'reset')
+
+
 The 'Flower Flow' is needed for every seperate robotic flower in the system (change topic so it contains the right device name!)
+-> update server security settings in downlink and uplink node for each flower
