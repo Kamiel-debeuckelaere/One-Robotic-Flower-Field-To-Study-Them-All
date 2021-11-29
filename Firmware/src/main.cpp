@@ -21,8 +21,8 @@
   // structuring
 typedef struct strVisitRec
 {
-  unsigned long startVisit; // internal clock time start visit (sec.) --> 4 bytes
-  uint8_t visit;            // visit duration (sec.) --> 1 byte
+  unsigned long startVisit; // internal clock time start visit (sec.) -> 4 bytes
+  uint8_t visit;            // visit duration (sec.) -> 1 byte
 } visitRec;
 
 // reserve space in SRAM memory for this max. amount of visitElements
@@ -48,8 +48,8 @@ struct uplinkmsg
 
 struct datamsg
 {
-  unsigned long startTimeBeforeSend;
-  uint8_t visitDuration;
+  uint16_t startTimeBeforeSend; // how many seconds before sending did the visit start -> 2 bytes
+  uint8_t visitDuration; // -> how long did the visit last (max. 250) -> 1 byte
 } datamsg;
 
     // sending message
