@@ -1,6 +1,13 @@
 This directory contains 2 flows in JSON format that can be imported in Node-RED.
 More information on how to import a flow: https://nodered.org/docs/user-guide/editor/workspace/import-export
 
+It will be needed to add the folowing nodes to the palette:
+- node-red-contrib-fs
+- node-red-dashboard
+- node-red-node-tail
+- node-red-node-rbe
+
+
 
 The 'File Logger Flow' is only needed once per robotic flower field system.
 -> change path to folder where CSV should be stored (nodes: 'filename generator', 'file-lister', 'init' and 'reset')
