@@ -6,5 +6,6 @@ The 'File Logger Flow' is only needed once per robotic flower field system.
 -> change path to folder where CSV should be stored (nodes: 'filename generator', 'file-lister', 'init' and 'reset')
 
 
-The 'Flower Flow' is needed for every seperate robotic flower in the system (change topic so it contains the right device name!)
+The 'Flower Flow' is needed for every seperate robotic flower in the system
+-> change topic so it contains the right device and app name!
 -> update server security settings in downlink and uplink node for each flower
