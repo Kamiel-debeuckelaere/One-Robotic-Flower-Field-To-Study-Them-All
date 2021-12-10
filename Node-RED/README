@@ -1,7 +1,7 @@
 This directory contains 2 flows in JSON format that can be imported in Node-RED.
 More information on how to import a flow: https://nodered.org/docs/user-guide/editor/workspace/import-export
 
-It will be needed to add the folowing nodes to the palette:
+It will be needed to add the folowing modules to the palette:
 - node-red-contrib-fs
 - node-red-dashboard
 - node-red-node-tail
