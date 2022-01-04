@@ -21,8 +21,8 @@
   // structuring
 typedef struct strVisitRec
 {
-  unsigned long startVisit; // internal clock time start visit (sec.) -> 4 bytes
-  uint8_t visit;            // visit duration (sec.) -> 1 byte
+  unsigned long startVisit; // internal clock time start visit (sec.) --> 4 bytes
+  uint8_t visit;            // visit duration (sec.) --> 1 byte
 } visitRec;
 
 // reserve space in SRAM memory for this max. amount of visitElements
@@ -48,8 +48,8 @@ struct uplinkmsg
 
 struct datamsg
 {
-  uint16_t startTimeBeforeSend; // how many seconds before sending did the visit start -> 2 bytes
-  uint8_t visitDuration; // -> how long did the visit last (max. 250) -> 1 byte
+  uint16_t startTimeBeforeSend; //2 bytes
+  uint8_t visitDuration; //1 byte
 } datamsg;
 
     // sending message
@@ -83,7 +83,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
   { //checking if max. sending 53 bytes reached and if there is still data to send
     visitRec visitRec2send;
     visitQueue.pop(&visitRec2send);
-    datamsg.startTimeBeforeSend = (millis() / PRECISION) - visitRec2send.startVisit;
+    datamsg.startTimeBeforeSend = (millis() / PRECISION) - visitRec2send.startVisit; //visit started this many seconds before sending
     datamsg.visitDuration = visitRec2send.visit;
 
     for (uint8_t i = 0; i < sizeof(datamsg); i++)
@@ -181,7 +181,7 @@ void menuPrint(void)
   DEBUG_PRINTLN(F(" #     TO STUDY THEM ALL      #"));
   DEBUG_PRINTLN(F("  ############################"));
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F(" [1]  Show device info"));
+  DEBUG_PRINTLN(F(" [1]  Device info"));
   DEBUG_PRINTLN(F(" [2]  Set DevEUI"));
   DEBUG_PRINTLN(F(" [3]  Set AppEUI"));
   DEBUG_PRINTLN(F(" [4]  Set AppKey"));
@@ -293,7 +293,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key!"));
+        DEBUG_PRINTLN(F("ERROR: Invalid key"));
       }
       break;
     case '3':
@@ -307,7 +307,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key!"));
+        DEBUG_PRINTLN(F("ERROR: Invalid key"));
       }
       break;
     case '4':
@@ -321,7 +321,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key!"));
+        DEBUG_PRINTLN(F("ERROR: Invalid key"));
       }
       break;
     case '0':
@@ -342,7 +342,7 @@ void serialHandler(void)
       }
       break;
     default:
-      DEBUG_PRINTLN(F("Unknown option!"));
+      DEBUG_PRINTLN(F("Unknown option"));
       menuPrint();
     }
   }
@@ -369,7 +369,7 @@ void refill()
 {
   myServo.attach(servoControl);
   digitalWrite(PowerSwitch, LOW); //power switch ON
-  DEBUG_PRINTLN(F("°Refill°"));
+  DEBUG_PRINTLN(F("Refill"));
   myServo.write(SERVO_OPEN, SERVO_SPEED, true);  //position = open, slow speed, true = wait until position reached
   delay(REFILL_TIME);                            // keep servo arm in nectar reservoir
   myServo.write(SERVO_CLOSE, SERVO_SPEED, true); //position = close
@@ -482,7 +482,7 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     myLora.autobaud(); //wake up Lora module
     delay(15);
 
-    DEBUG_PRINT(F("SENDING..."));
+    DEBUG_PRINT(F("SEND..."));
 
     if (DEV_MODE == true) //development
     {
@@ -502,6 +502,11 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
       savetoRAM(startVisit, visitCounter);
       visitState = 0;
       sendDuringVisit = 1;
+
+      if (refillNeed == 1)
+      {
+        refillGapTimer = millis() + 15000; // reset refill gap timer when sending during refill gap (plus 15 sec. for sending)
+      }
     }
 
     SENDdata(port); //sending, port can be specified
@@ -522,7 +527,7 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     myLora.sleep(43200000); //save energy in between sending, sleeping 12 hrs or untill waked up
 
     //show how long microcontroller occupied with sending function
-    DEBUG_PRINT(F("send time: ")); //development
+    DEBUG_PRINT(F("send time:")); //development
     DEBUG_PRINTLN((millis() - startSending) / PRECISION); //development
   }
 }
@@ -576,7 +581,7 @@ void setup()
   sendDuringVisit = 0;
   queueIsFull = 0;
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F("Starting Robotic Flower..."));
+  DEBUG_PRINTLN(F("Starting Robotic Flower"));
   DEBUG_PRINTLN(F(""));
 
   delay(500); // Allow some time for the RN2483 to boot and do a factory reset
@@ -665,12 +670,6 @@ void loop()
     DEBUG_PRINTLN(F(""));
     DEBUG_PRINTLN(F("GOING TO SLEEP"));
 
-    if (visitCounter != 0)
-    { // bee on flower at start sleep-mode
-      DEBUG_PRINTLN(F("--> during visit"));
-      savetoRAM(startVisit, visitCounter); // save start time & visit duration
-    }
-
     visitState = 0;
 
     digitalWrite(PowerSwitch, HIGH); //power switch OFF
@@ -691,12 +690,14 @@ void loop()
 
   //2. Sleep State
   if (FlowerState == sleep)
-  {
+  {   
+    // deep sleep mode
+
     while (sleepCounter < SLEEP_TIME)
     { // deep sleep for some time during night to save battery
       sleepCounter += 9;
 
-      if (DEV_MODE == true)
+      if (DEV_MODE == true && DEV_SLEEP_MODE == true)
       { //keep serial monitor open for development
         delay(8000);
         DEBUG_PRINT(F("Deep Sleep:"));
@@ -704,30 +705,59 @@ void loop()
         DEBUG_PRINT(F("/"));
         DEBUG_PRINTLN(SLEEP_TIME);
       }
+
       else
       { //.powerDown shuts down serial monitor (energy saving)
+        if (DEV_MODE == true)
+        { // flash led to signal sleep state
+          digitalWrite(PowerSwitch, LOW); // ON
+          FastLED.setBrightness(50);
+          leds[0] = CRGB::BlueViolet;
+          FastLED.show();
+          delay(1000);
+          digitalWrite(PowerSwitch, HIGH); // OFF
+        }
+
         LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); //max. sleep time 8 sec. (+- 10%)
       }
     }
 
     //interupt sleep to send message now and then to be able to receive message with LoRaWAN
-    if (DEV_MODE == true)
+
+    if (DEV_MODE == true && DEV_SLEEP_MODE == true)
     { //keep serial monitor open for development
       sendData(SLEEP_SEND_FREQUENCY_DEV, 2); // send data over LoRaWAN, port 2
       delay(8000);
+
+      //digitalWrite(PowerSwitch, LOW); // ON
+      //FastLED.setBrightness(100);
+      //leds[0] = CRGB::Yellow;
+      //FastLED.show();
+      //delay(1000);
+      //digitalWrite(PowerSwitch, HIGH); // OFF
     }
 
     else
-    {
-      while (wakeUpSendCounter < SLEEP_SEND_FREQUENCY)
-      {
-        wakeUpSendCounter += 9;
-        LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); //max. sleep time 8 sec. (+- 10%)
-      }
-      delay (10);
-      sendData(0,2); //send to be able to receive message for waking up
+    { 
+      //while (wakeUpSendCounter < SLEEP_SEND_FREQUENCY)
+      //{
+        if (DEV_MODE == true)
+        {
+        digitalWrite(PowerSwitch, LOW); // ON
+        FastLED.setBrightness(100);
+        leds[0] = CRGB::Yellow;
+        FastLED.show();
+        delay(1000);
+        digitalWrite(PowerSwitch, HIGH); //OFF
+        }
 
-      wakeUpSendCounter = 0; // reset counter
+        //wakeUpSendCounter += 9;
+        //LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); //max. sleep time 8 sec. (+- 10%)
+      //}
+
+      sendData(SLEEP_SEND_FREQUENCY,2); //send to be able to receive message for waking up, port 2
+      
+      //wakeUpSendCounter = 0; // reset counter
     }
 
     if (timeToSleep == false) //Go to wake-up when message received through LoRaWAN tells it's time to do so
@@ -743,7 +773,7 @@ void loop()
     sleepCounter = 0; // reset
 
     DEBUG_PRINTLN(F(""));
-    DEBUG_PRINTLN(F("WAKING UP"));
+    DEBUG_PRINTLN(F("WAKE UP"));
 
     refillGapTimer = millis(); //first refill in work state when timer ends
     refillNeed = 1;
@@ -752,20 +782,20 @@ void loop()
     sendStartTime = millis();       //start timer for message sending
     LightTimer = millis();          // start timer for flashing
 
-    //first IR-sensot read to start
+    //first IR-sensor read - to start
     digitalWrite(IRreceiverPower, HIGH);
     delay(1);
     digitalWrite(IRemitterPower, HIGH);
-    delay(1);
+    delay(20);
     previousSensorValue = analogRead(IRsensorRead);
+    
     digitalWrite(IRreceiverPower, LOW);
     digitalWrite(IRemitterPower, LOW);
 
     DEBUG_PRINTLN(F(""));
-    DEBUG_PRINTLN(F("WORKING"));
+    DEBUG_PRINTLN(F("WORK"));
 
     FlowerState = work;
-
   } // wake-up state end
 
   //4. Work State
@@ -808,8 +838,7 @@ void loop()
 
       if (SHOW_IR_VALUE == true) //development
       {
-        DEBUG_PRINT(F("IR: "));
-        DEBUG_PRINTLN(sensorValue);
+        DEBUG_PRINT(F("IR:")); DEBUG_PRINTLN(sensorValue);
         //DEBUG_PRINT(F("Previous value: ")); DEBUG_PRINTLN(previousSensorValue);
       }
 
@@ -826,7 +855,7 @@ void loop()
 
         if (visitState == 0)
         { //new visit starting
-          startVisit = round(millis() / PRECISION);
+          startVisit = round(millis()) / PRECISION;
           startVisitTimer = millis();
         }
 
@@ -840,7 +869,7 @@ void loop()
         if (visitCounter >= MAX_VISIT_DURATION) //maxCounter not over 255 (to be able to send visitDuration in 1 byte)
         { // visitor might be sleeping (or dead) in flower
 
-          DEBUG_PRINTLN(F("Max. visit")); //dev.
+          DEBUG_PRINTLN(F("Max.Visit")); //dev.
           //DEBUG_PRINT(visitCounter); DEBUG_PRINTLN(F("sec."));
 
           savetoRAM(startVisit, visitCounter); //save visit start time & visit duration
@@ -856,7 +885,13 @@ void loop()
         }
 
         startTimeAutoRefill = millis(); //avoid automatic refill during visit, restart timer
-        refillGapTimer = millis();      //refill after visit to renew 'nectar'
+        
+        if (refillNeed == 0)
+        {// only reset refill gap timer if this is the first visit since last refilling
+          refillGapTimer = millis();      //refill after visit to renew 'nectar'
+        }
+
+
         LightTimer = millis();          //development, avoid LED flashing during visit
       }
 
@@ -878,14 +913,14 @@ void loop()
       {
         DEBUG_PRINT(F("Visit: "));
         DEBUG_PRINT(visitCounter);
-        DEBUG_PRINTLN(F("sec."));
+        //DEBUG_PRINTLN(F(" sec."));
 
         savetoRAM(startVisit, visitCounter); //save start time & visit duration to queue
 
         if (visitCounter > VISIT_TRESHOLD)
         {
-          DEBUG_PRINTLN(F("Refill gap"));
-          DEBUG_PRINTLN(F(""));
+          DEBUG_PRINTLN(F("Refill gap")); DEBUG_PRINTLN(F(""));
+
           refillNeed = 1;       //need to refill after visit
         }
         visitCounter = 0;
