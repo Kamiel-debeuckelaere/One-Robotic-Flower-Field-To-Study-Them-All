@@ -1,4 +1,5 @@
 #define DEV_MODE false // true = led giving signal of status and keep possibility open to connect to debugSerial
+#define DEV_SLEEP_MODE false // keep serial monitor open during sleep if true, not fit to test sleep mode functioning
 #define SHOW_IR_VALUE false // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
 //#define DEBUG // put in comment to keep serial prints from compiling --> no serial communication
 
@@ -8,17 +9,19 @@
 
 #define SLEEP_TIME 21600 //'deep' sleep time (in sec.) after going to sleep (e.g. 6h = 21600 sec. +/- 10%) -> save power
 
-#define SENSOR_SENSITIVITY 3 // adjust to need (lower = more sensitive to IR -> quicker detection)
+#define SLEEP_SEND_FREQUENCY 900000 // send every 15 min. until time to wake up (in ms.)
+
+#define SENSOR_SENSITIVITY 10 // adjust to need (lower = more sensitive to IR -> quicker detection)
 
 #define MAX_VISIT_DURATION 250 // maximum time of a visit (in sec.)
 
 #define OBSTR_TRESH 3 // give warning when the the maxVisit is reached more than e.g. 3 consecutive times
 
-#define REFILL_GAP 30000 // refill gap after visit (in ms, here e.g. 30 sec.)
+#define REFILL_GAP 120000//300000 // refill gap after visit (in ms, e.g. 2 or 5 min.)
 
 #define AUTO_REFILL_TIME 600000 // refill every e.g. 10 min. to prevent drying out of nectar by evaporation (in ms)
 
-#define VISIT_TRESHOLD 3 // only refill if visit lasts at least this treshold time (in sec.)
+#define VISIT_TRESHOLD 3 //10 // only refill if visit lasts at least this treshold time (in sec.)
 
 #define WORK_SEND_FREQUENCY 600000 // send data every 10 min. with LoRaWAN (in ms)
 
@@ -27,7 +30,7 @@
 
 
 
-// WARNING!
+ // WARNING!
 // DON'T CHANGE VARIABLES BELOW (UNLESS YOU KNOW WHAT YOU ARE DOING)
 
 #define PRECISION 1000 // divide by 1000 to go from ms to sec.
@@ -36,7 +39,7 @@
 
 #define ON_TIME 1 // IR sensors only switched on for one millisecond per cycletime (power saving)
 
-#define SERVO_OPEN 90 // position of servo-arm in reservoir
+#define SERVO_OPEN 100 // position of servo-arm in reservoir
 
 #define SERVO_CLOSE 0 // position of servo-arm on feeding-hole
 
@@ -44,18 +47,16 @@
 
 #define REFILL_TIME 1000 // time the arm remains in reservoir(in ms)
 
-#define SLEEP_SEND_FREQUENCY 900 // send every 15 min. until time to wake up (in sec.)
-
 #define SLEEP_SEND_FREQUENCY_DEV 900000 // dev.mode only // send every 15 min. until time to wake up (in ms)
 
 #define GOING_TO_SLEEP_SEND_FREQUENCY 120000 // send every 2 min. until visitqueue is empty (in ms) -> send all data before going to sleep
 
 #define RESERVED_VISIT_SPACE 100 // max amount of visits that can be stored (visitElements of 5 bytes each)--> reserved space in SRAM for visitContainer
 
-#define RETRY_AMOUNT 5 // if no receive confirmation arrives, sending data will be retried e.g. 5 times
+#define RETRY_AMOUNT 5 // if no receive confirmation arrives, sending data will be retried (e.g. 5 times)
 
-#define NORMAL_FLASH_INTERVAL 5000 // dev. mode only // normal warning, flash every 5 sec. to show system is functioning
+#define NORMAL_FLASH_INTERVAL 1000 // dev. mode only // normal warning, flash every sec. to show system is functioning
 
-#define WARNING_FLASH_INTERVAL 2000 // battery warning, flash every 2 sec.
+#define WARNING_FLASH_INTERVAL 500 // battery warning, flash every 0.5 sec.
 
 #define FLASH_TIME 100 // how long LED is on
