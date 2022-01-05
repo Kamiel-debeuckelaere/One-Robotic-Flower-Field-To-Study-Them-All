@@ -1,10 +1,11 @@
 #define DEV_MODE true // true = led giving signal of status and keep possibility open to connect to debugSerial
-#define SHOW_IR_VALUE false // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
+#define DEV_SLEEP_MODE true // keep serial monitor open during sleep if true, not fit to test sleep mode functioning
+#define SHOW_IR_VALUE true // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
 #define DEBUG // put in comment to keep serial prints from compiling --> no serial debug lines are compiled
 
 // 1 Flower functioning
 
-#define SLEEP_TIME 40 //'deep' sleep time (in sec.) after going to sleep --> save power
+#define SLEEP_TIME 200 //'deep' sleep time (in sec.) after going to sleep --> save power
 
 // 2 InfreRed System
 
@@ -19,7 +20,7 @@
 
 // 3 Servo system
 
-#define SERVO_OPEN 90 //position of servo-arm in reservoir
+#define SERVO_OPEN 100 //position of servo-arm in reservoir
 #define SERVO_CLOSE 0  //position of servo-arm on feeding-hole
 #define SERVO_SPEED 10 //set speed of servo (0 = full speed, 1-255 slow to faster)
 
@@ -32,7 +33,7 @@
 
 // 4 LoRaWAN
 
-#define WORK_SEND_FREQUENCY 60000 // send data every 1 min. with LoRaWAN (in ms)
+#define WORK_SEND_FREQUENCY 120000 // send data every 2 min. with LoRaWAN (in ms)
 #define SLEEP_SEND_FREQUENCY_DEV 60000 // send every 1 min. until time to wake up (in ms)
 #define SLEEP_SEND_FREQUENCY 60 // send every 1 min. until time to wake up (in sec) // not used in dev. mode
 #define GOING_TO_SLEEP_SEND_FREQUENCY 60000 //send every 1 min. until visitqueue is empty (in ms)
@@ -42,8 +43,8 @@
 
 // 5 LED
 
-#define NORMAL_FLASH_INTERVAL 2000 // normal warning, flash every 2 sec.
-#define WARNING_FLASH_INTERVAL 2000 // battery warning, flash every 2 sec.
+#define NORMAL_FLASH_INTERVAL 1000 // normal warning, flash every sec.
+#define WARNING_FLASH_INTERVAL 500 // battery warning, flash every 0.5 sec.
 #define FLASH_TIME 100 //how long flash is on
 
 // 6 Battery
