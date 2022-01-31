@@ -1,7 +1,9 @@
 This directory contains 2 flows in JSON format that can be imported in Node-RED.
 More information on how to import a flow: https://nodered.org/docs/user-guide/editor/workspace/import-export
 
-It will be needed to add the folowing modules to the palette:
+These flows construct the dashboard website (see figure) and construct the CSV files of incoming data.
+
+It is necessary to add the folowing modules to the palette:
 - node-red-contrib-fs
 - node-red-dashboard
 - node-red-node-tail
@@ -15,3 +17,9 @@ The 'File Logger Flow' is only needed once per robotic flower field system.
 The 'Flower Flow' is needed for every seperate robotic flower in the system
 -> change topic so it contains the right device and app name!
 -> update server security settings in downlink and uplink node for each flower
+
+
+Screenshot of dashboard website
+The user interface of the frontend application with the tab ‘Battery’ opened. 
+An overview of all the robotic flowers in use can be seen with the time of the last update (last received message), 
+the battery voltage, and a graph of the voltage decline in function of time. 
