@@ -8,7 +8,7 @@
 #include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables" 
+#include "variables_DEV" 
 
 #include "fixed_variables"
 
@@ -391,6 +391,7 @@ void automaticRefill()
 
 void Battery_LEDflash(unsigned long normalInterval, unsigned long warningInterval)
 {
+  Read_battery();
   currentBatteryTime = millis();
   if (DEV_MODE == true) //development
   {
@@ -514,9 +515,6 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     queueIsFull = 0;     // reset
     sendDuringVisit = 0; //reset
 
-    //DEBUG_PRINT(F("Battery: "));DEBUG_PRINT(Battery_voltage); DEBUG_PRINTLN(F("v"));
-    //DEBUG_PRINT(F("Warning: ")); DEBUG_PRINTLN(batteryWarning); DEBUG_PRINTLN(F(""));
-
     //shut down LED when it was switched on in development mode
     leds[0] = CRGB::Black;           //development
     FastLED.show();                  //development
@@ -527,8 +525,8 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     myLora.sleep(43200000); //save energy in between sending, sleeping 12 hrs or untill waked up
 
     //show how long microcontroller occupied with sending function
-    DEBUG_PRINT(F("send time:")); //development
-    DEBUG_PRINTLN((millis() - startSending) / PRECISION); //development
+    //DEBUG_PRINT(F("send time:")); //development
+    //DEBUG_PRINTLN((millis() - startSending) / PRECISION); //development
   }
 }
 
@@ -695,15 +693,15 @@ void loop()
 
     while (sleepCounter < SLEEP_TIME)
     { // deep sleep for some time during night to save battery
-      sleepCounter += 9;
+      sleepCounter += 8;
 
       if (DEV_MODE == true && DEV_SLEEP_MODE == true)
       { //keep serial monitor open for development
         delay(8000);
-        DEBUG_PRINT(F("Deep Sleep:"));
-        DEBUG_PRINT(sleepCounter);
-        DEBUG_PRINT(F("/"));
-        DEBUG_PRINTLN(SLEEP_TIME);
+        //DEBUG_PRINT(F("Deep Sleep:"));
+        //DEBUG_PRINT(sleepCounter);
+        //DEBUG_PRINT(F("/"));
+        //DEBUG_PRINTLN(SLEEP_TIME);
       }
 
       else
@@ -801,7 +799,6 @@ void loop()
   //4. Work State
   if (FlowerState == work)
   {
-
     if (timeToSleep == true)
     { //Go to sleep when message received through LoRaWAN tells it's time to do so
       FlowerState = goingToSleep;
@@ -840,6 +837,8 @@ void loop()
       {
         DEBUG_PRINT(F("IR:")); DEBUG_PRINTLN(sensorValue);
         //DEBUG_PRINT(F("Previous value: ")); DEBUG_PRINTLN(previousSensorValue);
+        //DEBUG_PRINT(F("Battery: "));DEBUG_PRINT(Battery_voltage); DEBUG_PRINTLN(F("v"));
+        //DEBUG_PRINT(F("Warning: ")); DEBUG_PRINTLN(batteryWarning); DEBUG_PRINTLN(F(""));
       }
 
       // visit
@@ -913,7 +912,7 @@ void loop()
       {
         DEBUG_PRINT(F("Visit: "));
         DEBUG_PRINT(visitCounter);
-        //DEBUG_PRINTLN(F(" sec."));
+        DEBUG_PRINTLN(F(" sec."));
 
         savetoRAM(startVisit, visitCounter); //save start time & visit duration to queue
 
