@@ -17,7 +17,7 @@
 
 #define OBSTR_TRESH 3 // give warning when the the maxVisit is reached more than e.g. 3 consecutive times
 
-#define REFILL_GAP 120000//300000 // refill gap after visit (in ms, e.g. 2 or 5 min.)
+#define REFILL_GAP 600000 //300000 // refill gap after visit (in ms, e.g. 10 min, 5 min.)
 
 #define AUTO_REFILL_TIME 600000 // refill every e.g. 10 min. to prevent drying out of nectar by evaporation (in ms)
 
