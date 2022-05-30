@@ -15,8 +15,11 @@ enum FlowerState
 void timeConvert();
 
 int sleepCounter;
-bool timeToSleep;
-String timeToSleepString;
+uint8_t timeToSleep;
+String downlinkString;
+int downlink;
+
+uint16_t refillGap;
 
 int wakeUpSendCounter;
 
@@ -89,4 +92,3 @@ unsigned long startSending;
 
 bool sendDuringVisit;
 uint8_t retryCount;
-
