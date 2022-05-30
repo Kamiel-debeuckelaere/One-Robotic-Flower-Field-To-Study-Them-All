@@ -17,17 +17,20 @@
 
 #define OBSTR_TRESH 3 // give warning when the the maxVisit is reached more than e.g. 3 consecutive times
 
-#define REFILL_GAP 600000 //300000 // refill gap after visit (in ms, e.g. 10 min, 5 min.)
+#define REFILL_GAP_1 3 // option 1: 3 sec. (in sec.)
+#define REFILL_GAP_2 30 // option 2: 30 sec. (in sec.)
+#define REFILL_GAP_3 60 // option 3: 1 min. (in sec.)
+#define REFILL_GAP_4 120 // option 4: 2 min. (in sec.)
+#define REFILL_GAP_5 300 // option 5: 5 min. (in sec.)
+#define REFILL_GAP_6 600 // option 6: 10 min. (in sec.)
 
-#define AUTO_REFILL_TIME 600000 // refill every e.g. 10 min. to prevent drying out of nectar by evaporation (in ms)
+#define AUTO_REFILL_TIME 900000 // refill every e.g. 15 min. to prevent drying out of nectar by evaporation (in ms)
 
-#define VISIT_TRESHOLD 3 //10 // only refill if visit lasts at least this treshold time (in sec.)
+#define VISIT_TRESHOLD 3 // only refill if visit lasts at least this treshold time (in sec.)
 
 #define WORK_SEND_FREQUENCY 600000 // send data every 10 min. with LoRaWAN (in ms)
 
 #define WARNING_VOLTAGE 3.2 // give alarm when voltage is lower than this value
-
-
 
 
  // WARNING!
@@ -49,7 +52,7 @@
 
 #define SLEEP_SEND_FREQUENCY_DEV 900000 // dev.mode only // send every 15 min. until time to wake up (in ms)
 
-#define GOING_TO_SLEEP_SEND_FREQUENCY 120000 // send every 2 min. until visitqueue is empty (in ms) -> send all data before going to sleep
+#define GOING_TO_SLEEP_SEND_FREQUENCY 300000 // send every 5 min. until visitqueue is empty (in ms) -> send all data before going to sleep
 
 #define RESERVED_VISIT_SPACE 100 // max amount of visits that can be stored (visitElements of 5 bytes each)--> reserved space in SRAM for visitContainer
 
