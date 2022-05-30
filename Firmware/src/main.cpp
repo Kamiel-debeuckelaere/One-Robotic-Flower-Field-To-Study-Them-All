@@ -162,6 +162,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
     DEBUG_PRINT(F("Sleep message: ")); DEBUG_PRINTLN(timeToSleep);
     //DEBUG_PRINT(downlinkString); DEBUG_PRINT(F(" - "));
     DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); DEBUG_PRINT(F("Refill gap: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec. "));
+    DEBUG_PRINTLN(F(""));
   }
 }
 
@@ -217,12 +218,12 @@ void menuPrint(void)
   DEBUG_PRINTLN(F("   ONE ROBOTIC FLOWER FIELD  "));
   DEBUG_PRINTLN(F("      TO STUDY THEM ALL      "));
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F(" [1]  Device info"));
+  DEBUG_PRINTLN(F(" [1]  Info"));
   DEBUG_PRINTLN(F(" [2]  Set DevEUI"));
   DEBUG_PRINTLN(F(" [3]  Set AppEUI"));
   DEBUG_PRINTLN(F(" [4]  Set AppKey"));
-  DEBUG_PRINTLN(F(" [0]  Start operational mode"));
-  DEBUG_PRINTLN(F(" [R]  Factory reset"));
+  DEBUG_PRINTLN(F(" [0]  Start"));
+  DEBUG_PRINTLN(F(" [R]  Reset"));
   DEBUG_PRINTLN(F(""));
 }
 
@@ -309,13 +310,13 @@ void serialHandler(void)
       DEBUG_PRINTLN(config.writes);
       DEBUG_PRINT(F("Radio version: "));
       DEBUG_PRINTLN(myLora.sysver());
-      DEBUG_PRINT(F("HwEUI        : "));
+      DEBUG_PRINT(F("HwEUI: "));
       DEBUG_PRINTLN(myLora.hweui());
-      DEBUG_PRINT(F("DevEUI       : "));
+      DEBUG_PRINT(F("DevEUI: "));
       DEBUG_PRINTLN(config.DevEUI);
-      DEBUG_PRINT(F("AppEUI       : "));
+      DEBUG_PRINT(F("AppEUI: "));
       DEBUG_PRINTLN(config.AppEUI);
-      DEBUG_PRINT(F("AppKey       : "));
+      DEBUG_PRINT(F("AppKey: "));
       DEBUG_PRINTLN(config.AppKey);
       break;
     case '2':
@@ -361,7 +362,7 @@ void serialHandler(void)
       }
       break;
     case '0':
-      DEBUG_PRINTLN(F("Switching to operational mode..."));
+      DEBUG_PRINTLN(F("Operational mode..."));
       return; // jump out of loop, start software
       break;
     case 'r':
@@ -420,7 +421,7 @@ void automaticRefill()
 {
   if (millis() >= startTimeAutoRefill + AUTO_REFILL_TIME)
   {
-    DEBUG_PRINT(F("Auto refill...")); //dev.
+    DEBUG_PRINT(F("Auto refill")); //dev.
     refill();
   }
 }
@@ -560,9 +561,11 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
 
     myLora.sleep(43200000); //save energy in between sending, sleeping 12 hrs or untill waked up
 
+    sendDuration = millis() - startSending;
+
     //show how long microcontroller occupied with sending function
     //DEBUG_PRINT(F("send time:")); //development
-    //DEBUG_PRINTLN((millis() - startSending) / PRECISION); //development
+    //DEBUG_PRINTLN(sendDuration / PRECISION); //development
   }
 }
 
@@ -620,10 +623,10 @@ void setup()
 
   delay(500); // Allow some time for the RN2483 to boot and do a factory reset
   //loraSerial.println("sys factoryRESET");
-  delay(2000);
   myLora.setFrequencyPlan(TTN_EU);
   myLora.autobaud();
   //DEBUG_PRINTLN(F("Radio module reset"));
+  delay(2000);
 
   // Read config from EEPROM
   configRead();
@@ -646,12 +649,12 @@ void setup()
   // Try to join the network
   leds[0] = CRGB::Red;
   FastLED.show();
-  DEBUG_PRINT(F("OTAA join DingNet... "));
+  DEBUG_PRINT(F("OTAA... "));
   while (!myLora.initOTAA(config.AppEUI, config.AppKey, config.DevEUI))
   { //try to make connection, if not successful try again
     DEBUG_PRINTLN(F("FAIL (retry in 10 sec.)"));
     delay(10000);
-    DEBUG_PRINT(F("OTAA join DingNet... ")); //over the air activation
+    DEBUG_PRINT(F("OTAA... ")); //over the air activation
     delay(100);
   }
   DEBUG_PRINTLN(F("OK"));
@@ -861,9 +864,10 @@ void loop()
     }
 
     // refill interval after visit
-    if (millis() - refillGapTimer >= refillGap*1000 and millis() - refillGapTimer < refillGap*1000 + 10 and refillNeed == 1)
+    if ((millis() - refillGapTimer >= refillGap*1000) and (millis() - refillGapTimer < refillGap*1000 + sendDuration + 100) and refillNeed == 1)
     {
       refill();
+      sendDuration = 0; //reset
     }
 
     // detection on
