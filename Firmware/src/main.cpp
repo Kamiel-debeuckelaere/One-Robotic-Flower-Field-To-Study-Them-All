@@ -5,10 +5,10 @@
 //#include <EEPROM.h>
 #include <cppQueue.h>
 #include <LowPower.h>
-#include <avr/power.h>
+//#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables_DEV" 
+#include "variables" 
 
 #include "fixed_variables"
 
@@ -114,16 +114,54 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
   {
     DEBUG_PRINT(F(" / Failed TX and RX after "));
     DEBUG_PRINT(retryCount);
-    DEBUG_PRINTLN(F(" retries"));
+    DEBUG_PRINTLN(F(" attempts"));
   }
+
   else
   {
     DEBUG_PRINTLN(F(" --> SEND"));
-    timeToSleepString = myLora.getRx(); // get downlink message
-    timeToSleep = timeToSleepString.toInt(); //change string to integer
-    DEBUG_PRINT(F("Sleep message: "));
-    DEBUG_PRINT(timeToSleep); DEBUG_PRINT(F(" - "));
-    DEBUG_PRINTLN(timeToSleepString);
+    downlinkString = myLora.getRx(); // get downlink message
+    downlink = downlinkString.toInt(); //change downlinkString to integer
+
+    //refillGapEncoded = downlinkString.toInt(); //change byte 2 of downlinkString to integer
+    if (downlink == 0)
+    {
+      timeToSleep = true;
+    }
+    else
+    {
+      timeToSleep = false;
+    }
+
+    // change value of refillGap according to donwlink information
+    if (downlink == 1)
+    {
+      refillGap = REFILL_GAP_1;
+    }
+    if (downlink == 2)
+    {
+      refillGap = REFILL_GAP_2;
+    }
+    if (downlink == 3)
+    {
+      refillGap = REFILL_GAP_3;
+    }
+     if (downlink == 4)
+    {
+      refillGap = REFILL_GAP_4;
+    }
+    if (downlink == 5)
+    {
+      refillGap = REFILL_GAP_5;
+    }
+    if (downlink == 6)
+    {
+      refillGap = REFILL_GAP_6;
+    }
+
+    DEBUG_PRINT(F("Sleep message: ")); DEBUG_PRINTLN(timeToSleep);
+    //DEBUG_PRINT(downlinkString); DEBUG_PRINT(F(" - "));
+    DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); DEBUG_PRINT(F("Refill gap: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec. "));
   }
 }
 
@@ -175,11 +213,9 @@ void configRead(void)
   // Menu print
 void menuPrint(void)
 {
-  DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F("  ############################"));
-  DEBUG_PRINTLN(F(" #  ONE ROBOTIC FLOWER FIELD  #"));
-  DEBUG_PRINTLN(F(" #     TO STUDY THEM ALL      #"));
-  DEBUG_PRINTLN(F("  ############################"));
+  //DEBUG_PRINTLN(F(""));
+  DEBUG_PRINTLN(F("   ONE ROBOTIC FLOWER FIELD  "));
+  DEBUG_PRINTLN(F("      TO STUDY THEM ALL      "));
   DEBUG_PRINTLN(F(""));
   DEBUG_PRINTLN(F(" [1]  Device info"));
   DEBUG_PRINTLN(F(" [2]  Set DevEUI"));
@@ -648,6 +684,8 @@ void setup()
 
   Read_battery();
 
+  refillGap = REFILL_GAP_1; // standard refill gap
+
   if (DEV_MODE == false)
   { // shut of USB module to save energy
     USBCON |= (1 << FRZCLK); // Freeze the USB Clock
@@ -697,11 +735,19 @@ void loop()
 
       if (DEV_MODE == true && DEV_SLEEP_MODE == true)
       { //keep serial monitor open for development
-        delay(8000);
-        //DEBUG_PRINT(F("Deep Sleep:"));
-        //DEBUG_PRINT(sleepCounter);
-        //DEBUG_PRINT(F("/"));
-        //DEBUG_PRINTLN(SLEEP_TIME);
+        delay(7000);
+
+        digitalWrite(PowerSwitch, LOW); // ON
+        FastLED.setBrightness(50);
+        leds[0] = CRGB::BlueViolet;
+        FastLED.show();
+        delay(1000);
+        digitalWrite(PowerSwitch, HIGH); // OFF
+
+        DEBUG_PRINT(F("Deep Sleep:"));
+        DEBUG_PRINT(sleepCounter);
+        DEBUG_PRINT(F("/"));
+        DEBUG_PRINTLN(SLEEP_TIME);
       }
 
       else
@@ -815,7 +861,7 @@ void loop()
     }
 
     // refill interval after visit
-    if (millis() - refillGapTimer >= REFILL_GAP and millis() - refillGapTimer < REFILL_GAP + 10 and refillNeed == 1)
+    if (millis() - refillGapTimer >= refillGap*1000 and millis() - refillGapTimer < refillGap*1000 + 10 and refillNeed == 1)
     {
       refill();
     }
