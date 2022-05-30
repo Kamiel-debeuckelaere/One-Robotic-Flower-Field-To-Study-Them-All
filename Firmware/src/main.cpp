@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables" 
+#include "variables_DEV" 
 
 #include "fixed_variables"
 
@@ -95,7 +95,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
     sizeOfBuffer += sizeof(datamsg);
   }
 
-  DEBUG_PRINT(F("   Size of data message: ")); //dev.
+  DEBUG_PRINT(F("   Size: ")); //dev.
   DEBUG_PRINT(sizeOfBuffer);
   DEBUG_PRINT(F(" bytes")); //dev.
 
@@ -123,7 +123,6 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
     downlinkString = myLora.getRx(); // get downlink message
     downlink = downlinkString.toInt(); //change downlinkString to integer
 
-    //refillGapEncoded = downlinkString.toInt(); //change byte 2 of downlinkString to integer
     if (downlink == 0)
     {
       timeToSleep = true;
@@ -161,7 +160,8 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
     DEBUG_PRINT(F("Sleep message: ")); DEBUG_PRINTLN(timeToSleep);
     //DEBUG_PRINT(downlinkString); DEBUG_PRINT(F(" - "));
-    DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); DEBUG_PRINT(F("Refill gap: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec. "));
+    //DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); 
+    DEBUG_PRINT(F("Refill gap: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec. "));
     DEBUG_PRINTLN(F(""));
   }
 }
@@ -214,7 +214,7 @@ void configRead(void)
   // Menu print
 void menuPrint(void)
 {
-  //DEBUG_PRINTLN(F(""));
+  DEBUG_PRINTLN(F(""));
   DEBUG_PRINTLN(F("   ONE ROBOTIC FLOWER FIELD  "));
   DEBUG_PRINTLN(F("      TO STUDY THEM ALL      "));
   DEBUG_PRINTLN(F(""));
@@ -362,7 +362,7 @@ void serialHandler(void)
       }
       break;
     case '0':
-      DEBUG_PRINTLN(F("Operational mode..."));
+      DEBUG_PRINTLN(F("Operational mode"));
       return; // jump out of loop, start software
       break;
     case 'r':
@@ -561,11 +561,9 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
 
     myLora.sleep(43200000); //save energy in between sending, sleeping 12 hrs or untill waked up
 
-    sendDuration = millis() - startSending;
-
     //show how long microcontroller occupied with sending function
     //DEBUG_PRINT(F("send time:")); //development
-    //DEBUG_PRINTLN(sendDuration / PRECISION); //development
+    //DEBUG_PRINTLN((millis() - startSending) / PRECISION); //development
   }
 }
 
@@ -687,7 +685,7 @@ void setup()
 
   Read_battery();
 
-  refillGap = REFILL_GAP_1; // standard refill gap
+  refillGap = REFILL_GAP_1; // standard refill gap without selection
 
   if (DEV_MODE == false)
   { // shut of USB module to save energy
@@ -864,10 +862,9 @@ void loop()
     }
 
     // refill interval after visit
-    if ((millis() - refillGapTimer >= refillGap*1000) and (millis() - refillGapTimer < refillGap*1000 + sendDuration + 100) and refillNeed == 1)
+    if (((millis() - refillGapTimer)/1000 >= refillGap) and refillNeed == 1)
     {
       refill();
-      sendDuration = 0; //reset
     }
 
     // detection on
@@ -882,13 +879,16 @@ void loop()
       delay(1);
       digitalWrite(IRemitterPower, LOW);
       digitalWrite(IRreceiverPower, LOW);
+  
+      
 
-      if (SHOW_IR_VALUE == true) //development
+      if (SHOW_VALUE == true) //development
       {
         DEBUG_PRINT(F("IR:")); DEBUG_PRINTLN(sensorValue);
         //DEBUG_PRINT(F("Previous value: ")); DEBUG_PRINTLN(previousSensorValue);
         //DEBUG_PRINT(F("Battery: "));DEBUG_PRINT(Battery_voltage); DEBUG_PRINTLN(F("v"));
         //DEBUG_PRINT(F("Warning: ")); DEBUG_PRINTLN(batteryWarning); DEBUG_PRINTLN(F(""));
+        //DEBUG_PRINT((millis() - refillGapTimer)/1000); DEBUG_PRINT(" / "); DEBUG_PRINT(refillGap); DEBUG_PRINT(" - Refill need: "); DEBUG_PRINTLN(refillNeed);
       }
 
       // visit
@@ -968,7 +968,7 @@ void loop()
 
         if (visitCounter > VISIT_TRESHOLD)
         {
-          DEBUG_PRINTLN(F("Refill gap")); DEBUG_PRINTLN(F(""));
+          DEBUG_PRINT(F("Refill gap")); DEBUG_PRINTLN(F(""));
 
           refillNeed = 1;       //need to refill after visit
         }
