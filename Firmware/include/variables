@@ -30,7 +30,7 @@
 
 #define WORK_SEND_FREQUENCY 600000 // send data every 10 min. with LoRaWAN (in ms)
 
-#define WARNING_VOLTAGE 3.2 // give alarm when voltage is lower than this value
+#define WARNING_VOLTAGE 3 // give alarm when voltage is lower than this value
 
 
  // WARNING!
