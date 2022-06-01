@@ -19,7 +19,7 @@ The 'Flower Flow' is needed for every seperate robotic flower in the system
 -> update server security settings in downlink and uplink node for each flower
 
 
-Screenshot of dashboard website
-The user interface of the frontend application with the tab ‘Battery’ opened. 
-An overview of all the robotic flowers in use can be seen with the time of the last update (last received message), 
+Screenshots of dashboard website
+The user interface of the frontend application with the different tabs opened. 
+For example, in the 'battery' tab an overview of all the robotic flowers in use can be seen with the time of the last update (last received message), 
 the battery voltage, and a graph of the voltage decline in function of time. 
