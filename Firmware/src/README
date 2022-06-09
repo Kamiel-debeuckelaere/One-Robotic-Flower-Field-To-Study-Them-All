@@ -1,5 +1,7 @@
-In this folder, there are 2 possible sourcefiles containing a slightly different program:
+In this folder, there are 2 possible sourcefiles containing a slightly different program. 
+
+!! you can only use one of the 2 at once, so delete the one you don't need before opening the 'firmware' folder in e.g., Visual Studio Code !!
  
- 1) 
+ 1) 'main.cpp' has automatic refilling and a refill gap (that can be chosen from the NodeRed dashboard website) after a visit
  
- 2)
+ 2) 'main_standardRefilling.cpp' only has the automatic refilling (that can be chosen from the NodeRed dashboard website) 
