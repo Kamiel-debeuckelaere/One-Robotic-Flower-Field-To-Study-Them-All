@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables"
+#include "variables" 
 
 #include "fixed_variables"
 
@@ -95,7 +95,6 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
     sizeOfBuffer += sizeof(datamsg);
   }
 
-  DEBUG_PRINT(F("   Size: ")); //dev.
   DEBUG_PRINT(sizeOfBuffer);
   DEBUG_PRINT(F(" bytes")); //dev.
 
@@ -119,7 +118,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
   else
   {
-    DEBUG_PRINTLN(F(" --> SEND"));
+    DEBUG_PRINTLN(F(" -> SEND"));
     downlinkString = myLora.getRx(); // get downlink message
     downlink = downlinkString.toInt(); //change downlinkString to integer
 
@@ -158,10 +157,10 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
       refillGap = REFILL_GAP_6;
     }
 
-    DEBUG_PRINT(F("Sleep message: ")); DEBUG_PRINTLN(timeToSleep);
+    DEBUG_PRINT(F("Sleep: ")); DEBUG_PRINTLN(timeToSleep);
     //DEBUG_PRINT(downlinkString); DEBUG_PRINT(F(" - "));
     //DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); 
-    DEBUG_PRINT(F("Refill gap: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec. "));
+    DEBUG_PRINT(F("Refill: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec."));
     DEBUG_PRINTLN(F(""));
   }
 }
@@ -215,15 +214,15 @@ void configRead(void)
 void menuPrint(void)
 {
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F("   ONE ROBOTIC FLOWER FIELD  "));
-  DEBUG_PRINTLN(F("      TO STUDY THEM ALL      "));
+  DEBUG_PRINTLN(F(" ONE ROBOTIC FLOWER FIELD"));
+  DEBUG_PRINTLN(F("    TO STUDY THEM ALL"));
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F(" [1]  Info"));
-  DEBUG_PRINTLN(F(" [2]  Set DevEUI"));
-  DEBUG_PRINTLN(F(" [3]  Set AppEUI"));
-  DEBUG_PRINTLN(F(" [4]  Set AppKey"));
-  DEBUG_PRINTLN(F(" [0]  Start"));
-  DEBUG_PRINTLN(F(" [R]  Reset"));
+  DEBUG_PRINTLN(F(" [1] Info"));
+  DEBUG_PRINTLN(F(" [2] Set DevEUI"));
+  DEBUG_PRINTLN(F(" [3] Set AppEUI"));
+  DEBUG_PRINTLN(F(" [4] Set AppKey"));
+  DEBUG_PRINTLN(F(" [0] Start"));
+  DEBUG_PRINTLN(F(" [R] Reset"));
   DEBUG_PRINTLN(F(""));
 }
 
@@ -375,11 +374,11 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("Invalid input... aborting"));
+        DEBUG_PRINTLN(F("Invalid input... abort"));
       }
       break;
     default:
-      DEBUG_PRINTLN(F("Unknown option"));
+      DEBUG_PRINTLN(F("Unknown"));
       menuPrint();
     }
   }
@@ -406,7 +405,7 @@ void refill()
 {
   myServo.attach(servoControl);
   digitalWrite(PowerSwitch, LOW); //power switch ON
-  DEBUG_PRINTLN(F("Refill"));
+  DEBUG_PRINTLN(F(" -> REFILL"));
   myServo.write(SERVO_OPEN, SERVO_SPEED, true);  //position = open, slow speed, true = wait until position reached
   delay(REFILL_TIME);                            // keep servo arm in nectar reservoir
   myServo.write(SERVO_CLOSE, SERVO_SPEED, true); //position = close
@@ -421,7 +420,7 @@ void automaticRefill()
 {
   if (millis() >= startTimeAutoRefill + AUTO_REFILL_TIME)
   {
-    DEBUG_PRINT(F("Auto refill")); //dev.
+    DEBUG_PRINT(F("Automatic")); //dev.
     refill();
   }
 }
@@ -474,9 +473,6 @@ void Battery_LEDflash(unsigned long normalInterval, unsigned long warningInterva
 
 void savetoRAM(unsigned long startTime, uint8_t visitDuration)
 {
-  DEBUG_PRINTLN(F(""));
-  DEBUG_PRINT(F(" --> SAVING..."));
-
   if (DEV_MODE == true) //development
   {
     digitalWrite(PowerSwitch, LOW); // ON
@@ -495,12 +491,12 @@ void savetoRAM(unsigned long startTime, uint8_t visitDuration)
     {
       //if false: queue is full, too many visits
       queueIsFull = 1;
-      DEBUG_PRINT(F("ERROR: RESERVED_VISIT_SPACE full"));
+      DEBUG_PRINT(F("ERROR: memory full"));
     }
 
     else
     {
-      DEBUG_PRINTLN(F(" SAVED"));
+      DEBUG_PRINTLN(F(" -> SAVED"));
       DEBUG_PRINTLN(F(""));
       queueIsFull = 0;
     }
@@ -520,7 +516,8 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     myLora.autobaud(); //wake up Lora module
     delay(15);
 
-    DEBUG_PRINT(F("SEND..."));
+    DEBUG_PRINTLN(F(""));
+    DEBUG_PRINT(F("Sending "));
 
     if (DEV_MODE == true) //development
     {
@@ -535,7 +532,7 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     //sending during visit
     if (visitState == 1)
     {
-      DEBUG_PRINT(F(" --> during visit"));
+      DEBUG_PRINT(F("(during visit)"));
       visitCounter = round((millis() - startVisitTimer) / PRECISION);
       savetoRAM(startVisit, visitCounter);
       visitState = 0;
@@ -721,6 +718,8 @@ void loop()
     DEBUG_PRINTLN(F(""));
     DEBUG_PRINTLN(F("SLEEP"));
 
+    reconnectNeed = true;
+
     FlowerState = sleep;
 
   } // goingToSleep state end
@@ -768,23 +767,29 @@ void loop()
     }
 
     //interupt sleep to send message now and then to be able to receive message with LoRaWAN
+    if (reconnectNeed == true)
+    {//connect LORaWAN - Try to join the network
+      myLora.autobaud();
+      DEBUG_PRINT(F("OTAA... "));
+      while (!myLora.initOTAA(config.AppEUI, config.AppKey, config.DevEUI))
+      { //try to make connection, if not successful try again
+        DEBUG_PRINTLN(F("FAIL (retry in 10 sec.)"));
+        delay(10000);
+        DEBUG_PRINT(F("OTAA... ")); //over the air activation
+        delay(100);
+      }
+      DEBUG_PRINTLN(F("OK"));
+      reconnectNeed = false;
+    }
 
     if (DEV_MODE == true && DEV_SLEEP_MODE == true)
     { //keep serial monitor open for development
       sendData(SLEEP_SEND_FREQUENCY_DEV, 2); // send data over LoRaWAN, port 2
       delay(8000);
-
-      //digitalWrite(PowerSwitch, LOW); // ON
-      //FastLED.setBrightness(100);
-      //leds[0] = CRGB::Yellow;
-      //FastLED.show();
-      //delay(1000);
-      //digitalWrite(PowerSwitch, HIGH); // OFF
     }
 
     else
     { 
-      //while (wakeUpSendCounter < SLEEP_SEND_FREQUENCY)
       //{
         if (DEV_MODE == true)
         {
@@ -795,9 +800,6 @@ void loop()
         delay(1000);
         digitalWrite(PowerSwitch, HIGH); //OFF
         }
-
-        //wakeUpSendCounter += 9;
-        //LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); //max. sleep time 8 sec. (+- 10%)
       //}
 
       sendData(SLEEP_SEND_FREQUENCY,2); //send to be able to receive message for waking up, port 2
@@ -882,7 +884,7 @@ void loop()
   
       
 
-      if (SHOW_VALUE == true) //development
+      if (SHOW_VALUE == true) //development: comment or uncomment following lines according to need
       {
         DEBUG_PRINT(F("IR:")); DEBUG_PRINTLN(sensorValue);
         //DEBUG_PRINT(F("Previous value: ")); DEBUG_PRINTLN(previousSensorValue);
@@ -918,7 +920,7 @@ void loop()
         if (visitCounter >= MAX_VISIT_DURATION) //maxCounter not over 255 (to be able to send visitDuration in 1 byte)
         { // visitor might be sleeping (or dead) in flower
 
-          DEBUG_PRINTLN(F("Max.Visit")); //dev.
+          DEBUG_PRINTLN(F("Max.visit")); //dev.
           //DEBUG_PRINT(visitCounter); DEBUG_PRINTLN(F("sec."));
 
           savetoRAM(startVisit, visitCounter); //save visit start time & visit duration
@@ -960,9 +962,10 @@ void loop()
       // end of visit
       if (previousVisitState != visitState)
       {
+        DEBUG_PRINTLN(F(""));
         DEBUG_PRINT(F("Visit: "));
         DEBUG_PRINT(visitCounter);
-        DEBUG_PRINTLN(F(" sec."));
+        DEBUG_PRINT(F(" sec."));
 
         savetoRAM(startVisit, visitCounter); //save start time & visit duration to queue
 
