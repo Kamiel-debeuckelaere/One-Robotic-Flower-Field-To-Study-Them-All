@@ -92,3 +92,5 @@ unsigned long startSending;
 
 bool sendDuringVisit;
 uint8_t retryCount;
+
+bool reconnectNeed;
