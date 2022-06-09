@@ -4,4 +4,4 @@ In this folder, there are 2 possible sourcefiles containing a slightly different
  
  1) 'main.cpp' has automatic refilling and a refill gap (that can be chosen from the NodeRed dashboard website) after a visit
  
- 2) 'main_standardRefilling.cpp' only has the automatic refilling (that can be chosen from the NodeRed dashboard website) 
+ 2) 'main_autoRefillOnly.cpp' only has the automatic refilling (that can be chosen from the NodeRed dashboard website) 
