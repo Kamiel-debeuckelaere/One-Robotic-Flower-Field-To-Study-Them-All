@@ -86,11 +86,13 @@ rn2xx3 myLora(loraSerial);
 
 void savetoRAM(unsigned long, uint8_t);
 void sendData(unsigned long, uint8_t);
+void LoRaConnect();
 
 unsigned long sendStartTime;
 unsigned long startSending;
 
 bool sendDuringVisit;
 uint8_t retryCount;
+uint8_t failedToSendCount;
 
 bool reconnectNeed;
