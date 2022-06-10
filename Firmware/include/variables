@@ -1,6 +1,6 @@
 #define DEV_MODE false // true = led giving signal of status and keep possibility open to connect to debugSerial
 #define DEV_SLEEP_MODE false // keep serial monitor open during sleep if true, not fit to test sleep mode functioning
-#define SHOW_IR_VALUE false // false = IR sensor values not printed, true only works when DEBUG (below) is not commented
+#define SHOW_VALUE false // false = values not printed, true only works when DEBUG (below) is not commented
 //#define DEBUG // put in comment to keep serial prints from compiling --> no serial communication
 
 
@@ -31,6 +31,8 @@
 #define WORK_SEND_FREQUENCY 600000 // send data every 10 min. with LoRaWAN (in ms)
 
 #define WARNING_VOLTAGE 3 // give alarm when voltage is lower than this value
+
+#define RECONNECTION_TRESHOLD 2 // LoRa reconnection will be attempted after this amount of failed transmissions
 
 
  // WARNING!
