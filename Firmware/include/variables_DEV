@@ -44,7 +44,8 @@
 #define GOING_TO_SLEEP_SEND_FREQUENCY 60000 //send every 1 min. until visitqueue is empty (in ms)
 
 #define RESERVED_VISIT_SPACE 100 //max amount of visits that can be stored (visitElements of 5 bytes each)--> reserved space in SRAM for visitContainer
-#define RETRY_AMOUNT 3
+#define RETRY_AMOUNT 3 // tranmission will be retrtied this amount of times
+#define RECONNECTION_TRESHOLD 2 // LoRa reconnection will be attempted after this amount of failed transmissions
 
 // 5 LED
 
