@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables"
+#include "variables_DEV"
 
 #include "fixed_variables"
 
@@ -111,9 +111,9 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
   if (retryCount == RETRY_AMOUNT)
   {
-    DEBUG_PRINT(F(" / Failed TX and RX after "));
-    DEBUG_PRINT(retryCount);
-    DEBUG_PRINTLN(F(" attempts"));
+    DEBUG_PRINT(F(" / Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
+    failedToSendCount++;
+    DEBUG_PRINT(F("# Failed: ")); DEBUG_PRINTLN(failedToSendCount);
   }
 
   else
@@ -559,6 +559,34 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
   }
 }
 
+void LoRaConnect() //connect LORaWAN - Try to join the network
+{ 
+  leds[0] = CRGB::Red; //dev.
+  FastLED.show(); //dev.
+
+  myLora.setFrequencyPlan(TTN_EU);
+  DEBUG_PRINTLN(F("Radio module reset"));
+  delay(500); // Allow some time for the RN2483 to boot and do a factory reset
+  myLora.autobaud();
+  delay(100);
+
+  DEBUG_PRINT(F("OTAA... "));
+  while (!myLora.initOTAA(config.AppEUI, config.AppKey, config.DevEUI))
+  { //try to make connection, if not successful try again
+    DEBUG_PRINTLN(F("FAIL (retry in 10 sec.)"));
+    delay(10000);
+    DEBUG_PRINT(F("OTAA... ")); //over the air activation
+    delay(100);
+  }
+  DEBUG_PRINTLN(F("OK"));
+  leds[0] = CRGB::Green; //dev.
+  FastLED.show(); //dev.
+  delay(2000); //dev.
+  leds[0] = CRGB::Black; //dev.
+  FastLED.show(); //dev.
+}
+
+
 // SET-UP
 void setup()
 {
@@ -611,14 +639,11 @@ void setup()
   DEBUG_PRINTLN(F("Starting Robotic Flower"));
   DEBUG_PRINTLN(F(""));
 
-  delay(500); // Allow some time for the RN2483 to boot and do a factory reset
-  //loraSerial.println("sys factoryRESET");
   myLora.setFrequencyPlan(TTN_EU);
   //DEBUG_PRINTLN(F("Radio module reset"));
   myLora.autobaud();
   delay(2000);
   
-
   // Read config from EEPROM
   configRead();
   //DEBUG_PRINTLN(F("Read config from EEPROM"));
@@ -638,22 +663,8 @@ void setup()
   }
 
   //connect LORaWAN - Try to join the network
-  leds[0] = CRGB::Red;
-  FastLED.show();
-  DEBUG_PRINT(F("OTAA... "));
-  while (!myLora.initOTAA(config.AppEUI, config.AppKey, config.DevEUI))
-  { //try to make connection, if not successful try again
-    DEBUG_PRINTLN(F("FAIL (retry in 10 sec.)"));
-    delay(10000);
-    DEBUG_PRINT(F("OTAA... ")); //over the air activation
-    delay(100);
-  }
-  DEBUG_PRINTLN(F("OK"));
-  leds[0] = CRGB::Green;
-  FastLED.show();
-  delay(2000);
-  leds[0] = CRGB::Black;
-  FastLED.show();
+  LoRaConnect();
+  failedToSendCount = 0; //initialise
 
   // 6 Initialize Servo system
 
@@ -765,17 +776,8 @@ void loop()
     //interupt sleep to send message now and then to be able to receive message with LoRaWAN
     if (reconnectNeed == true)
     {//connect LORaWAN - Try to join the network
-      myLora.autobaud();
-      DEBUG_PRINT(F("OTAA... "));
-      while (!myLora.initOTAA(config.AppEUI, config.AppKey, config.DevEUI))
-      { //try to make connection, if not successful try again
-        DEBUG_PRINTLN(F("FAIL (retry in 10 sec.)"));
-        delay(10000);
-        DEBUG_PRINT(F("OTAA... ")); //over the air activation
-        delay(100);
-      }
-      DEBUG_PRINTLN(F("OK"));
-      reconnectNeed = false;
+      LoRaConnect();
+      failedToSendCount = 0; //reset
     }
 
     if (DEV_MODE == true && DEV_SLEEP_MODE == true)
@@ -850,6 +852,13 @@ void loop()
     if (millis() > startTimeCycle + CYCLE_TIME)
     {
       startTimeCycle = millis();
+    }
+
+    //check if reconnecting is needed
+    if (failedToSendCount >= RECONNECTION_TRESHOLD)
+    {
+      LoRaConnect();
+      failedToSendCount = 0; //reset
     }
 
     // detection on
