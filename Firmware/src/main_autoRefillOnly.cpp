@@ -111,7 +111,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
   if (retryCount == RETRY_AMOUNT)
   {
-    DEBUG_PRINT(F(" / Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
+    DEBUG_PRINT(F(" -> Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
     failedToSendCount++;
     DEBUG_PRINT(F("# Failed: ")); DEBUG_PRINTLN(failedToSendCount);
   }
@@ -119,6 +119,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
   else
   {
     DEBUG_PRINTLN(F(" -> SEND"));
+    failedToSendCount = 0; //reset
     downlinkString = myLora.getRx(); // get downlink message
     downlink = downlinkString.toInt(); //change downlinkString to integer
 
@@ -561,9 +562,15 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
 
 void LoRaConnect() //connect LORaWAN - Try to join the network
 { 
+  digitalWrite(PowerSwitch, LOW); // ON
   leds[0] = CRGB::Red; //dev.
   FastLED.show(); //dev.
 
+  digitalWrite(LoRaReset, LOW); //reset LoRa module
+  delay(10);
+  digitalWrite(LoRaReset, HIGH);
+
+  configRead();
   myLora.setFrequencyPlan(TTN_EU);
   DEBUG_PRINTLN(F("Radio module reset"));
   delay(500); // Allow some time for the RN2483 to boot and do a factory reset
@@ -584,6 +591,9 @@ void LoRaConnect() //connect LORaWAN - Try to join the network
   delay(2000); //dev.
   leds[0] = CRGB::Black; //dev.
   FastLED.show(); //dev.
+  digitalWrite(PowerSwitch, HIGH); // OFF
+
+  reconnectNeed = false; // reset
 }
 
 
@@ -597,9 +607,6 @@ void setup()
   // 1 Flower function
 
   pinMode(LoRaReset, OUTPUT);
-  digitalWrite(LoRaReset, LOW); //reset LoRa module at start of flower
-  delay(10);
-  digitalWrite(LoRaReset, HIGH);
 
   debugSerial.begin(9600); // link to serial monitor (cable)
   delay(5000);             //give 5sec. time to open Serial Monitor
@@ -638,19 +645,7 @@ void setup()
   DEBUG_PRINTLN(F(""));
   DEBUG_PRINTLN(F("Starting Robotic Flower"));
   DEBUG_PRINTLN(F(""));
-
-  myLora.setFrequencyPlan(TTN_EU);
-  //DEBUG_PRINTLN(F("Radio module reset"));
-  myLora.autobaud();
-  delay(2000);
   
-  // Read config from EEPROM
-  configRead();
-  //DEBUG_PRINTLN(F("Read config from EEPROM"));
-
-  // Initialise the hardware
-  //DEBUG_PRINTLN(F("Initialise hardware"));
-
   unsigned long begin = millis();
   while (millis() - begin < 10000)
   { // when not connected to serial monitor, try to join network automatically after 10 sec. with current config
@@ -777,7 +772,6 @@ void loop()
     if (reconnectNeed == true)
     {//connect LORaWAN - Try to join the network
       LoRaConnect();
-      failedToSendCount = 0; //reset
     }
 
     if (DEV_MODE == true && DEV_SLEEP_MODE == true)
@@ -858,7 +852,7 @@ void loop()
     if (failedToSendCount >= RECONNECTION_TRESHOLD)
     {
       LoRaConnect();
-      failedToSendCount = 0; //reset
+      failedToSendCount = 0; // reset
     }
 
     // detection on
