@@ -79,8 +79,7 @@
         "wires": [
             [
                 "dc8d2020.397f88",
-                "659c2d6c.78db9c",
-                "5c577dfb.25a31c"
+                "659c2d6c.78db9c"
             ]
         ]
     },
@@ -483,22 +482,6 @@
         ]
     },
     {
-        "id": "5c577dfb.25a31c",
-        "type": "function",
-        "z": "bf664f9e.1201b8",
-        "name": "timeToSleep",
-        "func": "var currentTime = new Date(msg.payload.received_at);\n\nvar sleep_time = flow.get(\"sleep_time\");\nvar waking_up = flow.get(\"waking_up\");\n\nvar hours = currentTime.getHours();\nvar timeToSleep;\n\nif ((hours >= sleep_time) || (hours < waking_up)){ //start & end of sleep mode (e.g. 21h-6h)\n    timeToSleep = \"AQ==\"; //base64: 1\n}\nelse{\n    timeToSleep = \"AA==\"; //base64: 0\n}\n\n\nmsg.payload = {\n  \"downlinks\": [{\n    \"f_port\": 15,\n    \"frm_payload\": timeToSleep,\n    \"priority\": \"NORMAL\"\n  }]\n}\n\n\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "x": 350,
-        "y": 80,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "a6a813b5.feb9b8",
         "type": "debug",
         "z": "bf664f9e.1201b8",
@@ -729,57 +712,57 @@
                 "type": "num"
             },
             {
-                "label": "1 p.m.",
+                "label": "1 p.m. (13)",
                 "value": 13,
                 "type": "num"
             },
             {
-                "label": "2 p.m.",
+                "label": "2 p.m. (14)",
                 "value": 14,
                 "type": "num"
             },
             {
-                "label": "3p.m.",
+                "label": "3 p.m. (15)",
                 "value": 15,
                 "type": "num"
             },
             {
-                "label": "4 p.m.",
+                "label": "4 p.m. (16)",
                 "value": 16,
                 "type": "num"
             },
             {
-                "label": "5 p.m.",
+                "label": "5 p.m. (17)",
                 "value": 17,
                 "type": "num"
             },
             {
-                "label": "6 p.m.",
+                "label": "6 p.m. (18)",
                 "value": 18,
                 "type": "num"
             },
             {
-                "label": "7 p.m.",
+                "label": "7 p.m. (19)",
                 "value": 19,
                 "type": "num"
             },
             {
-                "label": "8 p.m.",
+                "label": "8 p.m. (20)",
                 "value": 20,
                 "type": "num"
             },
             {
-                "label": "9 p.m.",
+                "label": "9 p.m. (21)",
                 "value": 21,
                 "type": "num"
             },
             {
-                "label": "10 p.m.",
+                "label": "10 p.m. (22)",
                 "value": 22,
                 "type": "num"
             },
             {
-                "label": "11 p.m.",
+                "label": "11 p.m. (23)",
                 "value": 23,
                 "type": "num"
             },
@@ -1033,12 +1016,12 @@
                 "type": "num"
             },
             {
-                "label": "5 min.",
+                "label": "6 min.",
                 "value": 5,
                 "type": "num"
             },
             {
-                "label": "10 min.",
+                "label": "12 min.",
                 "value": 6,
                 "type": "num"
             }
@@ -1126,7 +1109,7 @@
         "tab": "b7a0e06e.3ad428",
         "order": 1,
         "disp": true,
-        "width": "6",
+        "width": "5",
         "collapse": true
     },
     {
