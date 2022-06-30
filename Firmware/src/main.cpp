@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables_DEV" 
+#include "variables" 
 
 #include "fixed_variables"
 
@@ -546,6 +546,10 @@ void sendData(unsigned long frequency, uint8_t port) // frequency in ms
     }
 
     SENDdata(port); //sending, port can be specified
+    if (!visitQueue.isEmpty()) // sending double if visitqueu is not empty after sending
+    {
+      SENDdata(port); //sending, port can be specified
+    }
 
     queueIsFull = 0;     // reset
     sendDuringVisit = 0; //reset
@@ -650,6 +654,15 @@ void setup()
   DEBUG_PRINTLN(F("Starting Robotic Flower"));
   DEBUG_PRINTLN(F(""));
 
+  digitalWrite(LoRaReset, LOW); //reset LoRa module
+  delay(10);
+  digitalWrite(LoRaReset, HIGH);
+  configRead();
+  myLora.setFrequencyPlan(TTN_EU);
+  delay(500); // Allow some time for the RN2483 to boot and do a factory reset
+  myLora.autobaud();
+  delay(2000);
+
   unsigned long begin = millis();
   while (millis() - begin < 10000)
   { // when not connected to serial monitor, try to join network automatically after 10 sec. with current config
@@ -668,9 +681,14 @@ void setup()
   // 6 Initialize Servo system
 
   myServo.attach(servoControl); //open servo for first fill of nectar cup
+  digitalWrite(PowerSwitch, LOW); //power switch ON
+  DEBUG_PRINTLN(F("First Fill"));DEBUG_PRINTLN(F(""));
+  myServo.write(SERVO_OPEN, 0, true);  //position = open, full speed, true = wait until position reached
+  digitalWrite(PowerSwitch, HIGH);     //power switch OFF
+  myServo.detach();                    //to save energy
 
   // 7 start flower functioning
-  leds[0] = CRGB::Green;
+  leds[0] = CRGB::Green; //green light flash
   FastLED.show();
   delay(100);
   leds[0].fadeLightBy(255);
