@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables_DEV"
+#include "variables"
 
 #include "fixed_variables"
 
