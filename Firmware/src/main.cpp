@@ -638,7 +638,6 @@ void setup()
   // 4 LED
   FastLED.addLeds<WS2812, LEDdataPin, RGB>(leds, 1);
   FastLED.setBrightness(40);
-  digitalWrite(PowerSwitch, LOW); // ON
   leds[0] = CRGB::Red;
   FastLED.show();
 
@@ -684,7 +683,6 @@ void setup()
   digitalWrite(PowerSwitch, LOW); //power switch ON
   DEBUG_PRINTLN(F("First Fill"));DEBUG_PRINTLN(F(""));
   myServo.write(SERVO_OPEN, 0, true);  //position = open, full speed, true = wait until position reached
-  digitalWrite(PowerSwitch, HIGH);     //power switch OFF
   myServo.detach();                    //to save energy
 
   // 7 start flower functioning
