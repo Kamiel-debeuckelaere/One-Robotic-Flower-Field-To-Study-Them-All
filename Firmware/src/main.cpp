@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables" 
+#include "variables_DEV" 
 
 #include "fixed_variables"
 
@@ -111,9 +111,9 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
   if (retryCount == RETRY_AMOUNT)
   {
-    DEBUG_PRINT(F(" -> Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
+    //DEBUG_PRINT(F(" -> Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
     failedToSendCount++;
-    DEBUG_PRINT(F("# Failed: ")); DEBUG_PRINTLN(failedToSendCount);
+    //DEBUG_PRINT(F("# Failed: ")); DEBUG_PRINTLN(failedToSendCount);
   }
 
   else
@@ -161,7 +161,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
     DEBUG_PRINT(F("Sleep: ")); DEBUG_PRINTLN(timeToSleep);
     //DEBUG_PRINT(downlinkString); DEBUG_PRINT(F(" - "));
     //DEBUG_PRINT(F("downlink: ")); DEBUG_PRINT(downlink); DEBUG_PRINT(F(" - ")); 
-    DEBUG_PRINT(F("Refill: ")); DEBUG_PRINT(refillGap);DEBUG_PRINTLN(F(" sec."));
+    DEBUG_PRINT(F("Refill: ")); DEBUG_PRINT(refillGap);
     DEBUG_PRINTLN(F(""));
   }
 }
@@ -215,15 +215,15 @@ void configRead(void)
 void menuPrint(void)
 {
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F(" ONE ROBOTIC FLOWER FIELD"));
-  DEBUG_PRINTLN(F("    TO STUDY THEM ALL"));
+  DEBUG_PRINTLN(F("ONE ROBOTIC FLOWER FIELD"));
+  DEBUG_PRINTLN(F("   TO STUDY THEM ALL"));
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F(" [1] Info"));
-  DEBUG_PRINTLN(F(" [2] Set DevEUI"));
-  DEBUG_PRINTLN(F(" [3] Set AppEUI"));
-  DEBUG_PRINTLN(F(" [4] Set AppKey"));
-  DEBUG_PRINTLN(F(" [0] Start"));
-  DEBUG_PRINTLN(F(" [R] Reset"));
+  DEBUG_PRINTLN(F("[1] Info"));
+  DEBUG_PRINTLN(F("[2] DevEUI"));
+  DEBUG_PRINTLN(F("[3] AppEUI"));
+  DEBUG_PRINTLN(F("[4] AppKey"));
+  DEBUG_PRINTLN(F("[0] Start"));
+  DEBUG_PRINTLN(F("[R] Reset"));
   DEBUG_PRINTLN(F(""));
 }
 
@@ -298,7 +298,7 @@ void serialHandler(void)
 
     if (len != 1)
     {
-      DEBUG_PRINTLN(F("Invalid input"));
+      DEBUG_PRINTLN(F("Invalid"));
       continue;
     }
 
@@ -330,7 +330,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key"));
+        DEBUG_PRINTLN(F("ERROR"));
       }
       break;
     case '3':
@@ -344,7 +344,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key"));
+        DEBUG_PRINTLN(F("ERROR"));
       }
       break;
     case '4':
@@ -358,7 +358,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("ERROR: Invalid key"));
+        DEBUG_PRINTLN(F("ERROR"));
       }
       break;
     case '0':
@@ -367,7 +367,7 @@ void serialHandler(void)
       break;
     case 'r':
     case 'R':
-      DEBUG_PRINT(F("Are you sure? (y/n): "));
+      DEBUG_PRINT(F("Sure? (y/n): "));
       len = inputReadline(buf, serialBuflen);
       if (len == 1 && (buf[0] == 'Y' || buf[0] == 'y'))
       {
@@ -375,7 +375,7 @@ void serialHandler(void)
       }
       else
       {
-        DEBUG_PRINTLN(F("Invalid input... abort"));
+        DEBUG_PRINTLN(F("Invalid: abort"));
       }
       break;
     default:
@@ -650,7 +650,7 @@ void setup()
   sendDuringVisit = 0;
   queueIsFull = 0;
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F("Starting Robotic Flower"));
+  DEBUG_PRINTLN(F("Starting..."));
   DEBUG_PRINTLN(F(""));
 
   digitalWrite(LoRaReset, LOW); //reset LoRa module
@@ -681,7 +681,7 @@ void setup()
 
   myServo.attach(servoControl); //open servo for first fill of nectar cup
   digitalWrite(PowerSwitch, LOW); //power switch ON
-  DEBUG_PRINTLN(F("First Fill"));DEBUG_PRINTLN(F(""));
+  DEBUG_PRINTLN(F("Fill"));DEBUG_PRINTLN(F(""));
   myServo.write(SERVO_OPEN, 0, true);  //position = open, full speed, true = wait until position reached
   myServo.detach();                    //to save energy
 
@@ -984,7 +984,6 @@ void loop()
         DEBUG_PRINTLN(F(""));
         DEBUG_PRINT(F("Visit: "));
         DEBUG_PRINT(visitCounter);
-        DEBUG_PRINT(F(" sec."));
 
         savetoRAM(startVisit, visitCounter); //save start time & visit duration to queue
 
