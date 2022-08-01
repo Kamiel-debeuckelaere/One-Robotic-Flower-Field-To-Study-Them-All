@@ -678,7 +678,7 @@ void setup()
   myServo.attach(servoControl); //open servo for first fill of nectar cup
   digitalWrite(PowerSwitch, LOW); //power switch ON
   DEBUG_PRINTLN(F("First Fill"));DEBUG_PRINTLN(F(""));
-  myServo.write(SERVO_OPEN, 0, true);  //position = open, full speed, true = wait until position reached
+  myServo.write(SERVO_OPEN, 10, true);  //position = open, full speed, true = wait until position reached
   myServo.detach();                    //to save energy
 
   // 7 start flower functioning
