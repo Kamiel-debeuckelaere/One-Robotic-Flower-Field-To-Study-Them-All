@@ -18,7 +18,7 @@ The 'Flower Flow' is needed for every separate robotic flower in the system
 -> change topic so it contains the right device and app name!
 -> update server security settings in downlink and uplink node for each flower
 -> create dashboard website tabs (Battery, Alarms, Sleep time, Refill gap and Files) and groups for each flower
--> next, asign the following nodes per flower to the right tab and group, an example for flower 1:
+-> next, assign the following nodes per flower to the right tab and group, an example for flower 1:
     - Received: '[Alarms] Flower1' 
     - Received: '[Battery] Flower1' 
     - Chart:'[Battery] Flower1' 
@@ -30,7 +30,6 @@ The 'Flower Flow' is needed for every separate robotic flower in the system
     - Refill gap: '[Refill gap] Flower1' 
     - Going to sleep at: '[Sleep time] Flower1'
     - Waking up at: '[Sleep time] Flower1' 
-
 
 Screenshots of dashboard website
 The user interface of the frontend application with the different tabs opened. 
