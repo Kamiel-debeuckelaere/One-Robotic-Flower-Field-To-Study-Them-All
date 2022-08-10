@@ -215,13 +215,13 @@ void configRead(void)
 void menuPrint(void)
 {
   DEBUG_PRINTLN(F(""));
-  DEBUG_PRINTLN(F("ONE ROBOTIC FLOWER FIELD"));
-  DEBUG_PRINTLN(F("   TO STUDY THEM ALL"));
+  DEBUG_PRINTLN(F("ONE ROBOTIC FLOWER"));
+  DEBUG_PRINTLN(F(" TO STUDY THEM ALL"));
   DEBUG_PRINTLN(F(""));
   DEBUG_PRINTLN(F("[1] Info"));
-  DEBUG_PRINTLN(F("[2] DevEUI"));
-  DEBUG_PRINTLN(F("[3] AppEUI"));
-  DEBUG_PRINTLN(F("[4] AppKey"));
+  DEBUG_PRINTLN(F("[2] set DevEUI"));
+  DEBUG_PRINTLN(F("[3] set AppEUI"));
+  DEBUG_PRINTLN(F("[4] set AppKey"));
   DEBUG_PRINTLN(F("[0] Start"));
   DEBUG_PRINTLN(F("[R] Reset"));
   DEBUG_PRINTLN(F(""));
