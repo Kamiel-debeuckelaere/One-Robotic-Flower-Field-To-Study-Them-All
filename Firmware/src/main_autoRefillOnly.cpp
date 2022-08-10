@@ -798,16 +798,6 @@ void loop()
 
     else
     { 
-        if (DEV_MODE == true)
-        {
-        digitalWrite(PowerSwitch, LOW); // ON
-        FastLED.setBrightness(100);
-        leds[0] = CRGB::Yellow;
-        FastLED.show();
-        delay(1000);
-        digitalWrite(PowerSwitch, HIGH); //OFF
-        }
-
       sendData(SLEEP_SEND_FREQUENCY,2); //send to be able to receive message for waking up, port 2
     }
 
