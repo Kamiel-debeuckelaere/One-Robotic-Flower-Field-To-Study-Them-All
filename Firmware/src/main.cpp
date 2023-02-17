@@ -8,7 +8,7 @@
 //#include <avr/power.h>
 
 // include "variables" for normal function/ "variables_DEV" for developmental function
-#include "variables" 
+#include "variables_DEV"
 
 #include "fixed_variables"
 
@@ -96,7 +96,7 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
   }
 
   DEBUG_PRINT(sizeOfBuffer);
-  DEBUG_PRINT(F(" bytes")); //dev.
+  DEBUG_PRINTLN(F(" bytes")); //dev.
 
   retryCount = 0;
   TX_RETURN_TYPE resultOfSend;
@@ -111,9 +111,9 @@ TX_RETURN_TYPE SENDdata(uint8_t port, bool cnf = false)
 
   if (retryCount == RETRY_AMOUNT)
   {
-    //DEBUG_PRINT(F(" -> Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
+    DEBUG_PRINT(F(" -> Failed after ")); DEBUG_PRINT(retryCount);DEBUG_PRINTLN(F(" retries"));
     failedToSendCount++;
-    //DEBUG_PRINT(F("# Failed: ")); DEBUG_PRINTLN(failedToSendCount);
+    DEBUG_PRINT(F("Fail ")); DEBUG_PRINT(failedToSendCount); DEBUG_PRINT(F("/")); DEBUG_PRINTLN(RECONNECTION_TRESHOLD);
   }
 
   else
@@ -293,7 +293,7 @@ void serialHandler(void)
 
   while (1)
   {
-    DEBUG_PRINT(F("Command > "));
+    DEBUG_PRINT(F("Command> "));
     len = inputReadline(buf, serialBuflen);
 
     if (len != 1)
@@ -402,14 +402,14 @@ void Read_battery()
   }
 }
 
-void refill()
+void refill(uint8_t speed)
 {
   myServo.attach(servoControl);
   digitalWrite(PowerSwitch, LOW); //power switch ON
   DEBUG_PRINTLN(F(" -> REFILL"));
-  myServo.write(SERVO_OPEN, SERVO_SPEED, true);  //position = open, slow speed, true = wait until position reached
-  delay(REFILL_TIME);                            // keep servo arm in nectar reservoir
-  myServo.write(SERVO_CLOSE, SERVO_SPEED, true); //position = close
+  myServo.write(SERVO_OPEN, speed, true);  //position = open, slow speed, true = wait until position reached
+  delay(REFILL_TIME);                       // keep servo arm in nectar reservoir
+  myServo.write(SERVO_CLOSE, speed, true); //position = close
   digitalWrite(PowerSwitch, HIGH);               //power switch OFF
   myServo.detach();                              //to save energy
   refillNeed = 0;                                //reset refill need
@@ -417,12 +417,12 @@ void refill()
   startTimeAutoRefill = millis();
 }
 
-void automaticRefill()
+void automaticRefill(uint8_t speed)
 {
-  if (millis() >= startTimeAutoRefill + AUTO_REFILL_TIME)
+  if ((millis() >= startTimeAutoRefill + AUTO_REFILL_TIME) && (refillNeed == 0))
   {
-    DEBUG_PRINT(F("Automatic")); //dev.
-    refill();
+    DEBUG_PRINT(F("Auto")); //dev.
+    refill(speed);
   }
 }
 
@@ -581,7 +581,7 @@ void LoRaConnect() //connect LORaWAN - Try to join the network
 
   configRead();
   myLora.setFrequencyPlan(TTN_EU);
-  DEBUG_PRINTLN(F("Radio module reset"));
+  DEBUG_PRINTLN(F("Radio reset"));
   delay(500); // Allow some time for the RN2483 to boot and do a factory reset
   myLora.autobaud();
   delay(2000);
@@ -677,15 +677,7 @@ void setup()
   LoRaConnect();
   failedToSendCount = 0; //initialise
 
-  // 6 Initialize Servo system
-
-  myServo.attach(servoControl); //open servo for first fill of nectar cup
-  digitalWrite(PowerSwitch, LOW); //power switch ON
-  DEBUG_PRINTLN(F("Fill"));DEBUG_PRINTLN(F(""));
-  myServo.write(SERVO_OPEN, 10, true);  //position = open, full speed, true = wait until position reached
-  myServo.detach();                    //to save energy
-
-  // 7 start flower functioning
+  // 6 start flower functioning
   leds[0] = CRGB::Green; //green light flash
   FastLED.show();
   delay(100);
@@ -697,8 +689,6 @@ void setup()
   delay(100);
   leds[0] = CRGB::Black;
   FastLED.show();
-
-  digitalWrite(PowerSwitch, HIGH); // OFF
 
   LightTimer = millis(); // start timer for flashing
 
@@ -820,8 +810,8 @@ void loop()
     DEBUG_PRINTLN(F(""));
     DEBUG_PRINTLN(F("WAKE UP"));
 
-    refillGapTimer = millis(); //first refill in work state when timer ends
-    refillNeed = 1;
+    //refillGapTimer = millis(); //first refill in work state when timer ends
+    refill(SERVO_SPEED);
 
     startTimeAutoRefill = millis(); //start automatic refill timer
     sendStartTime = millis();       //start timer for message sending
@@ -853,7 +843,7 @@ void loop()
 
     Battery_LEDflash(NORMAL_FLASH_INTERVAL, WARNING_FLASH_INTERVAL); // flash led to show functioning (development)
     sendData(WORK_SEND_FREQUENCY, 1);   // send data over LoRaWAN (e.g. every 10min.), port 1
-    automaticRefill();                  // automatic servo movement to prevent drying out of nectar
+    automaticRefill(SERVO_SPEED);                  // automatic servo movement to prevent drying out of nectar
 
     // detection system timer reset
     if (millis() > startTimeCycle + CYCLE_TIME)
@@ -862,9 +852,9 @@ void loop()
     }
 
     // refill interval after visit
-    if (((millis() - refillGapTimer)/1000 >= refillGap) and refillNeed == 1)
+    if (((millis() - refillGapTimer)/1000 >= refillGap) && refillNeed == 1)
     {
-      refill();
+      refill(SERVO_SPEED);
     }
 
     //check if reconnecting is needed
@@ -895,7 +885,7 @@ void loop()
         //DEBUG_PRINT(F("Previous value: ")); DEBUG_PRINTLN(previousSensorValue);
         //DEBUG_PRINT(F("Battery: "));DEBUG_PRINT(Battery_voltage); DEBUG_PRINTLN(F("v"));
         //DEBUG_PRINT(F("Warning: ")); DEBUG_PRINTLN(batteryWarning); DEBUG_PRINTLN(F(""));
-        //DEBUG_PRINT((millis() - refillGapTimer)/1000); DEBUG_PRINT(" / "); DEBUG_PRINT(refillGap); DEBUG_PRINT(" - Refill need: "); DEBUG_PRINTLN(refillNeed);
+        //DEBUG_PRINT((millis() - refillGapTimer)/1000); DEBUG_PRINT(" / "); DEBUG_PRINTLN(refillGap); DEBUG_PRINTLN(refillNeed);
       }
 
       // visit
