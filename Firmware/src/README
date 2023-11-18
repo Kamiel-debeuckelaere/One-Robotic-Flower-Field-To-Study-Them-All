@@ -11,5 +11,5 @@ In this folder, there are 4 possible sourcefiles containing a slightly different
 
  4) 'main_RFID_no_RX_sending.cpp' can be selected when you combine the flowers with the Microsensys RFID system.
      The RFID radio waves will make the flowers deaf, meaning they cannot receive instructions anymore, so in this firmware version,
-     when the flower is put to sleep, it will keep sending data but not expecting an answer. Note that you will have to put the flowers
-     to sleep from the dashboard website before switching on the RFID readers.
+     when the flower is put to sleep, it will keep sending data but not expecting an answer. Note that you will have to put the
+     flowers to sleep from the dashboard website before switching on the RFID readers.
