@@ -1,7 +1,15 @@
-In this folder, there are 2 possible sourcefiles containing a slightly different program. 
+In this folder, there are 4 possible sourcefiles containing a slightly different program. 
 
-!! you can only use one of the 2 at once, so delete the one you don't need before opening the 'firmware' folder in e.g., Visual Studio Code !!
+!! you can only use one source file at once, so delete the ones you don't need before opening the 'firmware' folder in e.g., Visual Studio Code !!
  
- 1) 'main.cpp' has automatic refilling and a refill gap (that can be chosen from the NodeRed dashboard website) after a visit
+ 1) 'main.cpp' has automatic refilling and a refill gap (that can be chosen from the NodeRed dashboard website) after a visit,
+     keep in mind you have to slect a refill gap in orde to have the flower working properly!
  
- 2) 'main_autoRefillOnly.cpp' only has the automatic refilling (that can be chosen from the NodeRed dashboard website) 
+ 2) 'main_autoRefillOnly.cpp' only has the automatic refilling (that can be chosen from the NodeRed dashboard website)
+
+ 3) 'main_no_sending.cpp' can be selected if you want to use the robotic flower for refilling only
+
+ 4) 'main_RFID_no_RX_sending.cpp' can be selected when you combine the flowers with the Microsensys RFID system.
+     The RFID radio waves will make the flowers deaf, meaning they cannot receive instructions anymore, so in this firmware version,
+     when the flower is put to sleep, it will keep sending data but not expecting an answer. Note that you will have to put the flowers
+     to sleep from the dashboard website before switching on the RFID readers.
