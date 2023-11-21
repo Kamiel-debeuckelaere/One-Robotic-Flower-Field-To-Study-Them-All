@@ -1,10 +1,11 @@
 Dear visitor
 
-In this repository you can find 4 folders, each containing different information and files to construct robotic flowers.
+In this repository you can find several folders, each containing different information and files to construct robotic flowers.
 - 3D-design files
 - Firmware to put on the arduino (only use one of the two included .cpp files!)
 - Node-RED flows
 - PCB-design files
+- Proof of concept, with data, script and video
 
 We bundled a lot of information in the user manual, including instructions for construction and use of the robotic flower. 
 I hope you can find everything you need, if not, don't hesitate to ask!
